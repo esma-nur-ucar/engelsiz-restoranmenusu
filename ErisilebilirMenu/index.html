@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Son Yaz Restorant – Engelsiz Dijital Menü</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* CSS Değişkenleri - Önceki "toprak rengi" temasına geri döndürüldü */
+        :root {
+            --clr-primary: #5d3a2e;
+            --clr-secondary: #f3ebe7;
+            --clr-accent: #eac9b2;
+            --clr-white: #ffffff;
+            --radius: 16px;
+            --shadow: 0 6px 16px rgba(0,0,0,.1);
+            --font: 'Lexend', sans-serif; /* Ana menü başlıkları için */
+            --body-font: 'Montserrat', Arial, sans-serif; /* Genel body metni için */
+            /* Yeni toprak rengi tonları */
+            --earth-brown: #8B4513; /* SaddleBrown */
+            --earth-brown-hover: #A0522D; /* Sienna */
+        }
+
+        /* Temel Sıfırlamalar ve Genel Body Stilleri */
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: var(--body-font); /* Montserrat kullanıldı */
+            background: var(--clr-secondary);
+            color: var(--clr-primary);
+            text-align: center;
+            padding: 1rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Header Stilleri */
+        header {
+            background: var(--clr-white);
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 1100px;
+            display: flex; /* İçerikleri ortalamak için flexbox kullan */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        header img {
+            max-width: 100%; /* Fotoğrafın genişliği, kapsayıcısına göre ayarlanır */
+            height: auto; /* Oranı koru */
+            border-radius: 8px; /* Hafif köşeler için */
+            margin-bottom: 1rem;
+        }
+        h1 { font-size: 2.5rem; margin-bottom: .2em; }
+        .lead { font-size: 1.2rem; margin: 0; color:#7b5c50; }
+
+        /* Buton Grubu Stilleri */
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Genel Aksiyon Butonu Stilleri - action-button olarak geri döndürüldü */
+        .action-button {
+            background: var(--earth-brown); /* Toprak rengi */
+            color: var(--clr-white); /* Beyaz yazı rengi */
+            border:none;
+            padding:.75rem 2rem;
+            font-weight:700;
+            font-size:1rem;
+            border-radius: var(--radius);
+            margin:0 auto;
+            box-shadow: var(--shadow);
+            cursor:pointer;
+            transition: background .2s;
+            max-width: 300px;
+            width: 100%;
+        }
+        .action-button:hover { background:var(--earth-brown-hover); } /* Hover rengi */
+        .action-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Durum Mesajı, Sipariş Durumu ve Sipariş Listesi Stilleri - ID'ler eski haline döndürüldü */
+        #status, #orderStatus, #currentOrdersList {
+            background: var(--clr-white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1rem;
+            margin-top: 1rem;
+            width: 100%;
+            max-width: 1100px;
+            text-align: left;
+        }
+        #status {
+            min-height: 2rem;
+            font-weight: 600;
+            color: #444;
+        }
+        #orderStatus {
+            font-weight: bold;
+            color: var(--clr-primary);
+        }
+        #currentOrdersList h3 {
+            margin-top: 0;
+            color: var(--clr-primary);
+        }
+        #currentOrdersList ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        #currentOrdersList li {
+            padding: 0.5rem 0;
+            border-bottom: 1px dotted #eee;
+            font-size: 0.95rem;
+            color: #555;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #currentOrdersList li:last-child {
+            border-bottom: none;
+        }
+        .order-item-name {
+            flex-grow: 1;
+        }
+        .order-item-price {
+            font-weight: bold;
+            color: var(--clr-primary);
+            margin-left: 1rem;
+        }
+
+        /* Kategori Başlığı Stilleri */
+        .category-title {
+            width: 100%;
+            max-width: 1100px;
+            text-align: left;
+            margin: 2rem auto 1rem;
+            font-size: 2rem;
+            color: var(--clr-primary);
+            border-bottom: 2px solid var(--clr-accent);
+            padding-bottom: 0.5rem;
+            font-family: var(--font); /* Lexend kullanıldı */
+        }
+
+        /* Menü Grid Stilleri */
+        .menu-grid{
+            display:grid;
+            gap:1.5rem;
+            grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+            max-width:1100px;
+            margin:0 auto;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        /* Menü Öğesi Kart Stilleri */
+        .menu-item{
+            background:var(--clr-white);
+            border-radius:var(--radius);
+            box-shadow:var(--shadow);
+            overflow:hidden;
+            transition:transform .2s;
+            position:relative;
+            cursor: pointer;
+            padding-bottom: 1rem;
+        }
+        .menu-item:hover{ transform:scale(1.02); }
+        .menu-item img.item-photo{
+            width:100%;
+            height:150px;
+            object-fit:cover;
+            display:block;
+            pointer-events: none;
+            user-select: none;
+        }
+        .menu-content{
+            padding: 0.75rem 1.25rem 0;
+        }
+        .icon{ font-size:2rem; margin-bottom:.3rem; display:block; }
+        .menu-item h2{
+            margin:.4rem 0 .2rem;
+            font-size:1.25rem;
+            font-family: var(--font); /* Lexend kullanıldı */
+        }
+        .description, .serving-info {
+            display: block;
+            font-size: 0.9em;
+            color: #555;
+            margin-top: 3px;
+            font-style: italic;
+        }
+        .serving-info {
+            font-weight: 500;
+            color: #777;
+            margin-top: 5px;
+            font-style: normal; /* İtalik olmasın */
+        }
+        .menu-item .price { /* Price sınıfı için stil ekle */
+            font-weight: bold;
+            color: var(--clr-primary);
+            font-size: 1.1em;
+            margin-top: 0.5rem;
+        }
+
+        /* Detay Alanı Stilleri */
+        #details {
+            background: var(--clr-white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 1100px;
+            width: 100%;
+            margin: 2rem auto 0;
+            padding: 1rem 2rem;
+            text-align: left;
+            display: none; /* Başta gizli */
+        }
+        #details h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--clr-primary);
+            font-family: var(--font); /* Lexend kullanıldı */
+        }
+        #details ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        #details ul li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap; /* Açıklamaların alt satıra geçmesi için */
+        }
+        #details ul li:last-child {
+            border-bottom: none;
+        }
+        #details .price {
+            font-weight: 700;
+            color: var(--clr-primary);
+        }
+        #details ul li span {
+            flex-grow: 1; /* Metnin genişlemesini sağlar */
+        }
+
+        /* Geri Butonu Stilleri */
+        #back-btn {
+            display: block;
+            margin: 1rem auto 0;
+            padding: 0.5rem 1rem;
+            background: var(--clr-accent);
+            color: var(--clr-primary);
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            transition: background .2s;
+        }
+        #back-btn:hover {
+            background: #d9b499;
+        }
+
+        /* Responsive Ayarlar */
+        @media (max-width: 768px) {
+            .button-group {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            .action-button { /* big-btn yerine action-button */
+                max-width: 100%;
+            }
+            header img {
+                max-width: 80%; /* Küçük ekranlarda fotoğraf boyutu */
+            }
+            h1 { font-size: 2rem; }
+            .lead { font-size: 1rem; }
+            .category-title { font-size: 1.5rem; }
+            .menu-item h2 { font-size: 1.1rem; }
+            #details h2 { font-size: 1.5rem; }
+            #details ul li { font-size: 1rem; }
+
+            /* Mevcut Siparişler bölümünü küçültme */
+            #currentOrdersList {
+                padding: 0.5rem; /* Azaltılmış dolgu */
+                margin-top: 0.5rem; /* Azaltılmış üst boşluk */
+            }
+            #currentOrdersList h2 {
+                font-size: 1.2rem; /* Başlık boyutunu küçült */
+                margin-bottom: 0.5rem;
+            }
+            #currentOrdersList li {
+                font-size: 0.85rem; /* Liste öğesi yazı tipini küçült */
+                padding: 0.3rem 0;
+            }
+
+            /* Menü öğelerini 2 sütuna ayarlama */
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 sütun zorla */
+                gap: 1rem; /* Daha küçük boşluk */
+            }
+            .menu-item img.item-photo {
+                height: 120px; /* Görsel yüksekliğini ayarla */
+            }
+            .menu-item h2 {
+                font-size: 1rem; /* Ürün başlıklarını küçült */
+            }
+            .description, .serving-info, .menu-item .price {
+                font-size: 0.8em; /* Açıklama ve fiyat yazı tiplerini küçült */
+            }
+        }
+   </style>
+</head>
+<body>
+    <header>
+        <h1>Son Yaz Restoran</h1>
+        <p class="lead">Engelsiz Dijital Menü</p>
+        <div class="button-group">
+            <button id="orderVoiceCommandBtn" class="action-button">Sesli Sipariş Ver</button>
+            <button id="updateOrderBtn" class="action-button" disabled>Siparişi Güncelle</button>
+            <button id="cancelOrderBtn" class="action-button" disabled>Siparişi İptal Et</button>
+        </div>
+        <div id="status" role="status" aria-live="polite">Dinliyorum... Lütfen komutunuzu söyleyin.</div>
+    </header>
+
+    <div class="container">
+        <div class="status-bar">
+            <span id="status-display">Hazır.</span>
+            <span id="orderStatus-display">Henüz bir siparişiniz yok.</span>
+        </div>
+
+        <div id="currentOrdersList" class="order-list-section">
+            <h2>Mevcut Siparişler:</h2>
+            <ul id="ordersUl">
+                <li>Henüz aktif siparişiniz bulunmamaktadır.</li>
+            </ul>
+        </div>
+
+        <main id="main-content" class="menu-section">
+            </main>
+
+        <div id="details" class="menu-section">
+            <h2 id="details-title">Seçili Ürün Detayları</h2>
+            <ul id="item-details-list">
+                </ul>
+            <button id="back-btn" class="btn btn-secondary">Geri Dön</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const orderVoiceCommandBtn = document.getElementById('orderVoiceCommandBtn');
+            const updateOrderBtn = document.getElementById('updateOrderBtn');
+            const cancelOrderBtn = document.getElementById('cancelOrderBtn');
+            const statusDiv = document.getElementById('status');
+            const statusDisplayDiv = document.getElementById('status-display');
+            const orderStatusDiv = document.getElementById('orderStatus');
+            const orderStatusDisplayDiv = document.getElementById('orderStatus-display');
+            const ordersUl = document.getElementById('ordersUl');
+            const mainContent = document.getElementById('main-content');
+            const detailsSection = document.getElementById('details');
+            const detailsTitle = document.getElementById('details-title');
+            const itemDetailsList = document.getElementById('item-details-list');
+            const backBtn = document.getElementById('back-btn');
+
+            let recognition;
+            let synth = window.speechSynthesis;
+            let currentOrder = [];
+            let isAwaitingConfirmation = false; // Genel onaylar için kullanılmaya devam edecek
+            let isAwaitingCategorySelection = false;
+            let isAwaitingItemOrder = false;
+            let initialInteractionDone = false;
+            let listeningTimeoutId = null; // Zamanlayıcı ID'sini tutar
+            // Post-order dokunma/güncelle/iptal state'leri globalde tutulacak
+            let isOrderClosedAwaitingTouch = false;
+            let isOrderClosedUpdateOrCancel = false;
+            let orderClosedTouchHandler = null;
+
+            // Menü Verisi
+            const menuData = {
+                icecekler: {
+                    name: "İçecekler",
+                    keywords: ["içecek", "içecekler", "su", "çay", "kahve", "soda", "meyve suyu", "kola", "ayran", "limonata", "americano", "cappuccino"],
+                    items: [
+                        { id: "50", name: "Su", price: 10, description: "Şişe su.", serving: "Soğuk servis.", keywords: ["su"], imageUrl: "images/su.jpg" },
+                        { id: "51", name: "Çay", price: 15, description: "Demleme siyah çay.", serving: "İnce belli bardakta.", keywords: ["çay"], imageUrl: "images/çay.jpg" },
+                        { id: "52", name: "Türk Kahvesi", price: 25, description: "Geleneksel Türk kahvesi.", serving: "Lokum ile.", keywords: ["türk kahvesi", "kahve"], imageUrl: "images/türkkahvesi.jpg" },
+                        { id: "53", name: "Kola", price: 20, description: "Gazlı içecek.", serving: "Buz ve limon ile.", keywords: ["kola"], imageUrl: "images/Kola.jpg" },
+                        { id: "54", name: "Ayran", price: 18, description: "Geleneksel Türk yoğurt içeceği.", serving: "Soğuk servis.", keywords: ["ayran"], imageUrl: "images/ayran.jpg" },
+                        { id: "55", name: "Taze Sıkılmış Portakal Suyu", price: 35, description: "Taze sıkılmış portakallardan.", serving: "Soğuk servis.", keywords: ["portakal suyu", "meyve suyu"], imageUrl: "images/portakalsuyu.jpg" },
+                        { id: "56", name: "Americano", price: 30, description: "Espresso ve sıcak su ile hazırlanan hafif kahve.", serving: "Sıcak servis.", keywords: ["americano", "kahve"], imageUrl: "images/Americano.jpg" },
+                        { id: "57", name: "Cappuccino", price: 35, description: "Espresso, sıcak süt ve süt köpüğü ile hazırlanan klasik kahve.", serving: "Üzeri kakao serpilmiş.", keywords: ["cappuccino", "kahve"], imageUrl: "images/Cappuccino.jpg" }
+                    ]
+                },
+                kahvalti: {
+                    name: "Kahvaltı",
+                    keywords: ["kahvaltı", "serpme kahvaltı", "menemen", "yumurta", "omlet", "kruvasan", "tost", "sucuklu yumurta", "peynir tabağı", "bal kaymak"],
+                    items: [
+                        { id: "7", name: "Serpme Kahvaltı", price: 120, description: "Peynir, zeytin, yumurta, bal, reçel, tereyağı ve ekmek çeşitleriyle geniş sunum.", serving: "Geniş bir tabakta çeşitli lezzetler.", keywords: ["serpme kahvaltı", "serpme"], imageUrl: "images/serpmekahvaltı.jpg" },
+                        { id: "8", name: "Menemen", price: 55, description: "Domates, biber ve yumurtayla hazırlanır.", serving: "Sıcak tavada servis edilir.", keywords: ["menemen"], imageUrl: "images/Menemen.jpg" },
+                        { id: "9", name: "Sucuklu Yumurta", price: 60, description: "Tavada pişmiş sucuk dilimleriyle servis edilen yumurta.", serving: "Tavada pişmiş sucuk dilimleriyle.", keywords: ["sucuklu yumurta", "sucuk"], imageUrl: "images/sucukluyumurta.jpg" },
+                        { id: "10", name: "Omlet", price: 50, description: "Peynirli veya sebzeli seçenekleriyle.", serving: "Sıcak olarak tabakta.", keywords: ["omlet"], imageUrl: "images/Omlet.jpg" },
+                        { id: "11", name: "Kruvasan Tabağı", price: 65, description: "Tereyağlı kruvasan, çilek reçeli ve taze meyve ile servis edilir.", serving: "Reçel ve taze meyve ile.", keywords: ["kruvasan tabağı", "kruvasan"], imageUrl: "images/kruvasantabağı.jpg" }
+                    ]
+                },
+                anayemekler: {
+                    name: "Ana Yemekler",
+                    keywords: ["ana yemek", "ana yemekler", "köfte", "tavuk", "et", "balık", "sote", "pilav", "makarna", "pizza", "burger", "ızgara", "karnıyarık", "güveç", "yemek", "yemekler"],
+                    items: [
+                        { id: "18", name: "Köfte", price: 70, description: "Izgara veya kızartma olarak, yanında pilav ve salata ile sunulur.", serving: "Yanında pilav ve salata ile.", keywords: ["köfte"], imageUrl: "images/köfte.jpg" },
+                        { id: "19", name: "Izgara Tavuk", price: 85, description: "Baharatlı ızgara tavuk, garnitür eşliğinde servis edilir.", serving: "Garnitür eşliğinde.", keywords: ["ızgara tavuk", "tavuk"], imageUrl: "images/ızgaratavuk.jpg" },
+                        { id: "20", name: "Et Sote", price: 90, description: "Özel soslu, sıcak tavada sotelenmiş et.", serving: "Sıcak tavada servis edilir.", keywords: ["et sote", "sote", "et"], imageUrl: "images/etsote.jpg" },
+                        { id: "21", name: "Pilav Üstü Tavuk", price: 75, description: "Sulu tavuk yemeği, tereyağlı pilav üzerinde sunulur.", serving: "Tereyağlı pilav üzerinde.", keywords: ["pilav üstü tavuk", "pilavlı tavuk"], imageUrl: "images/pilavüstütavuk.jpg" },
+                        { id: "22", name: "Karnıyarık", price: 80, description: "Kıyma ile doldurulmuş patlıcan, domates sosuyla.", serving: "Domates sosuyla sıcak.", keywords: ["karnıyarık"], imageUrl: "images/karnıyarık.jpg" }
+                    ]
+                },
+                corbalar: {
+                    name: "Çorbalar",
+                    keywords: ["çorba", "çorbalar", "mercimek", "domates", "ezogelin", "işkembe", "tavuk suyu"],
+                    items: [
+                        { id: "23", name: "Mercimek Çorbası", price: 20, description: "Sıcak, kıvamlı mercimek çorbası.", serving: "Yanında limon ile servis edilir.", keywords: ["mercimek çorbası", "mercimek"], imageUrl: "images/mercimekçorbası.jpg" },
+                        { id: "24", name: "Domates Çorbası", price: 22, description: "Taze domates püresi ile hazırlanmış, kremalı çorba.", serving: "Kremalı ve sıcak.", keywords: ["domates çorbası", "domates"], imageUrl: "images/domatesçorbası.jpg" },
+                        { id: "25", name: "Ezogelin Çorbası", price: 20, description: "Baharatlı ve bol yeşillikli ezogelin çorbası.", serving: "Sıcak servis edilir.", keywords: ["ezogelin çorbası", "ezogelin"], imageUrl: "images/ezogelinçorbası.jpg" }
+                    ]
+                },
+                salatalar: {
+                    name: "Salatalar",
+                    keywords: ["salata", "salatalar", "çoban", "ton balıklı", "sezar", "akdeniz", "yeşil salata"],
+                    items: [
+                        { id: "26", name: "Çoban Salata", price: 35, description: "Taze domates, salatalık, biber ve soğanla hazırlanmış klasik salata.", serving: "Klasik ve ferahlatıcı.", keywords: ["çoban salata", "çoban"], imageUrl: "images/çobansalata.jpg" },
+                        { id: "27", name: "Ton Balıklı Salata", price: 60, description: "Ton balığı, yeşillikler ve limonlu sos eşliğinde sunulur.", serving: "Yeşillikler ve limonlu sos ile.", keywords: ["ton balıklı salata", "ton balığı", "ton"], imageUrl: "images/tonbalıklı.jpg" }
+                    ]
+                },
+                makarnalar: {
+                    name: "Makarnalar",
+                    keywords: ["makarna", "makarnalar", "spagetti", "fettuccine", "penne", "lazanya", "mantı"],
+                    items: [
+                        { id: "38", name: "Spagetti Bolonez", price: 85, description: "Kıymalı domates sosuyla klasik spagetti.", serving: "Rendelenmiş parmesan peyniri ile.", keywords: ["spagetti bolonez", "spagetti"], imageUrl: "images/spagettibolonez.jpg" },
+                        { id: "39", "name": "Fettuccine Alfredo", price: 90, description: "Kremalı peynir soslu fettuccine.", serving: "Taze maydanoz ile.", keywords: ["fettuccine alfredo", "fettuccine"], imageUrl: "images/alfredo.jpg" },
+                        { id: "40", name: "Penne Arabiata", price: 80, description: "Acı domates soslu penne makarna.", serving: "Acı severler için.", keywords: ["penne arabiata", "penne"], imageUrl: "images/penne.jpg" }
+                    ]
+                },
+                pizzalar: {
+                    name: "Pizzalar",
+                    keywords: ["pizza", "pizzalar", "margarita", "karışık pizza", "pepperoni pizza"],
+                    items: [
+                        { id: "41", name: "Margarita Pizza", price: 90, description: "Mozzarella, domates ve fesleğenli klasik pizza.", serving: "İnce hamur, sıcak servis.", keywords: ["margarita pizza", "margarita"], imageUrl: "images/margaritapizza.jpg" },
+                        { id: "42", name: "Karışık Pizza", price: 110, description: "Sucuk, sosis, mantar, biber ve zeytin ile.", serving: "Bol malzemeli.", keywords: ["karışık pizza", "karışık"], imageUrl: "images/karışıkpizza.jpg" }
+                    ]
+                },
+                burgerler: {
+                    name: "Burgerler",
+                    keywords: ["burger", "burgerler", "hamburger", "klasik burger", "tavuk burger", "cheeseburger"],
+                    items: [
+                        { id: "43", name: "Klasik Burger", price: 95, description: "Dana köftesi, marul, domates, turşu ve özel sos.", serving: "Patates kızartması ile.", keywords: ["klasik burger", "burger", "hamburger"], imageUrl: "images/klasikburger.jpg" },
+                        { id: "44", name: "Tavuk Burger", price: 85, description: "Izgara tavuk göğsü, marul, domates ve mayonez.", serving: "Yanında salata ile.", keywords: ["tavuk burger", "tavuk"], imageUrl: "images/tavukburger.jpg" }
+                    ]
+                },
+                turkmutfagi: {
+                    name: "Türk Mutfağı",
+                    keywords: ["türk mutfağı", "türk", "kebap", "mantı", "sarma", "dolma", "iskender", "lahmacun", "pide", "türk yemekleri"],
+                    items: [
+                        { id: "28", name: "Kebap", price: 100, description: "Izgara ve baharatlarla lezzetlendirilmiş et yemeği.", serving: "Pide ve közlenmiş sebzelerle.", keywords: ["kebap"], imageUrl: "images/kebap.jpg" },
+                        { id: "29", name: "Mantı", price: 95, description: "Yoğurt ve sos ile servis edilen küçük hamur tatlısı.", serving: "Sarımsaklı yoğurt ve nane yağı ile.", keywords: ["mantı"], imageUrl: "images/mantı.jpg" },
+                        { id: "30", name: "Sarma", price: 85, description: "Asma yaprağı veya lahana yapraklarının pirinçle doldurulması.", serving: "Yoğurt ile sıcak.", keywords: ["sarma"], imageUrl: "images/sarma.jpg" }
+                    ]
+                },
+                dunyamutfagi: {
+                    name: "Dünya Mutfağı",
+                    keywords: ["dünya mutfağı", "dünya", "sushi", "fajita", "burrito", "pad thai", "risotto", "uluslararası yemekler"],
+                    items: [
+                        { id: "31", name: "Sushi", price: 150, description: "Taze balık ve pirinçle hazırlanan Japon yemeği.", serving: "Wasabi, zencefil ve soya sosu ile.", keywords: ["sushi"], imageUrl: "images/sushi.jpg" }
+                    ]
+                },
+                denizurunleri: {
+                    name: "Deniz Ürünleri",
+                    keywords: ["deniz ürünleri", "deniz", "karides güveç", "karides", "güveç", "kalamar tava", "kalamar", "somon ızgara", "somon", "balık"],
+                    items: [
+                        { id: "32", name: "Karides Güveç", price: 110, description: "Tereyağında sotelenmiş karidesler, sebzelerle güveçte.", serving: "Sıcak güveçte.", keywords: ["karides güveç", "karides", "güveç"], imageUrl: "images/karidesgüveç.jpg" },
+                        { id: "33", name: "Kalamar Tava", price: 95, description: "Çıtır çıtır kızartılmış kalamar halkaları.", serving: "Tarator sos ile.", keywords: ["kalamar tava", "kalamar"], imageUrl: "images/kalamartava.jpg" },
+                        { id: "45", name: "Somon Izgara", price: 130, description: "Taze somon fileto ızgarada pişirilir.", serving: "Limon dilimi ve yeşilliklerle.", keywords: ["somon ızgara", "somon"], imageUrl: "images/somonızgara.jpg" }
+                    ]
+                },
+                vejetaryen: {
+                    name: "Vejetaryen",
+                    keywords: ["vejetaryen", "vejetaryan","vejeteryen", "falafel", "noodle", "mercimek köftesi", "sebze yemeği", "humus", "enginar", "vegan", "etsiz", "bitkisel"],
+                    items: [
+                        { id: "34", name: "Falafel Tabağı", price: 70, description: "Nohut köftesi, humus ve taze salata ile.", serving: "Pita ekmeği ve tahin sos ile.", keywords: ["falafel tabağı", "falafel"], imageUrl: "images/falafel.jpg" },
+                        { id: "35", name: "Sebzeli Noodle", price: 75, description: "Taze sebzelerle wokta pişirilmiş noodle.", serving: "Asya sosları ile.", keywords: ["sebzeli noodle", "noodle"], imageUrl: "images/sebzelinoodle.jpg" },
+                        { id: "46", name: "Mercimek Köftesi", price: 50, description: "Kırmızı mercimek ve baharatlarla hazırlanan köfteler.", serving: "Marul ve limon ile.", keywords: ["mercimek köftesi", "mercimek"], imageUrl: "images/mercimekköftesi.jpg" }
+                    ]
+                },
+                tatlilar: {
+                    name: "Tatlılar",
+                    keywords: ["tatlı", "tatlılar", "cheesecake", "tiramisu", "baklava", "künefe", "kazandibi", "sütlaç", "dondurma", "sufle", "profiterol"],
+                    items: [
+                        { id: "12", name: "Cheesecake", price: 80, description: "Kremalı ve hafif bir tatlı.", serving: "Mevsim meyveleri sosu ile.", keywords: ["cheesecake","çizkek"], imageUrl: "images/cheesecake.jpg" },
+                        { id: "13", name: "Tiramisu", price: 75, description: "İtalyan klasiği kahveli tatlı.", serving: "Kakao serpilmiş, özel sunum.", keywords: ["tiramisu"], imageUrl: "images/tiramisu.jpg" },
+                        { id: "14", name: "Baklava", price: 55, description: "Şerbetli, fıstık ve cevizli dilimler halinde.", serving: "Şerbetli ve dilimler halinde.", keywords: ["baklava"], imageUrl: "images/baklava.jpg" },
+                        { id: "15", name: "Künefe", price: 65, description: "Sıcak, tel kadayıf ve peynirle.", serving: "Yanında kaymak ile sıcak.", keywords: ["künefe"], imageUrl: "images/künefe.jpg" },
+                        { id: "16", name: "Kazandibi", price: 40, description: "Karamelize edilmiş sütlü tatlı.", serving: "Küçük tabakta servis edilir.", keywords: ["kazandibi"], imageUrl: "images/kazandibi.jpg" },
+                        { id: "17", name: "Sütlaç", price: 35, description: "Fırınlanmış, tarçın serpilmiş.", serving: "Kâselerde sunulur.", keywords: ["sütlaç"], imageUrl: "images/sütlaç.jpg" }
+                    ]
+                },
+                alkollu_icecekler: {
+                    name: "Alkollü İçecekler",
+                    keywords: ["alkollü içecekler", "alkollü", "bira", "şarap", "viski", "rakı", "votka", "cin", "kokteyl", "içki"],
+                    items: [
+                        { id: "36", name: "Bira", price: 60, description: "Soğuk fıçı bira veya şişe seçenekleri.", serving: "Soğuk bardakta.", keywords: ["bira"], imageUrl: "images/bira.jpg" },
+                        { id: "37", name: "Kırmızı Şarap", price: 120, description: "Özenle seçilmiş yerli ve yabancı şaraplar.", serving: "Uygun kadeh ile.", keywords: ["kırmızı şarap", "şarap"], imageUrl: "images/kırmızışarap.jpg" },
+                        { id: "47", name: "Viski", price: 150, description: "Tek malt veya harmanlanmış viski seçenekleri.", serving: "Buz veya sade.", keywords: ["viski"], imageUrl: "images/viski.jpg" },
+                        { id: "48", name: "Beyaz Şarap", price: 110, description: "Hafif ve ferahlatıcı beyaz şaraplar.", serving: "Soğuk servis.", keywords: ["beyaz şarap", "şarap"], imageUrl: "images/beyazşarap.jpg" },
+                        { id: "49", name: "Rose Şarap", price: 105, description: "Gül rengi, meyvemsi ve hafif şarap.", serving: "İdeal sıcaklıkta.", keywords: ["rose şarap", "şarap"], imageUrl: "images/roseşarap.jpg" }
+                    ]
+                }
+            };
+
+           // Yardımcı fonksiyon: Esnek eşleşme için
+function findBestMatch(command, dataList, keyProperty = 'name', minScore = 70) {
+    const normalizedCommand = command.toLowerCase().trim();
+    const commandWords = normalizedCommand.split(' ').filter(w => w.length > 1);
+
+    let bestMatch = null;
+    let highestScore = 0;
+
+    for (const data of dataList) {
+        const name = data[keyProperty].toLowerCase();
+        const keywords = data.keywords ? data.keywords.map(k => k.toLowerCase()) : [];
+
+        let score = 0;
+
+        // 1. Tam eşleşme (komut tam isimle ya da keyword ile eşleşirse)
+        if (normalizedCommand === name || keywords.includes(normalizedCommand)) {
+            score = 1000;
+        } else {
+            // 2. Komuttaki kelimelerin kaç tanesi isimde veya keywordlerde geçiyor?
+            let matchedWordsCount = 0;
+
+            for (const word of commandWords) {
+                if (name.includes(word) || keywords.some(k => k.includes(word))) {
+                    matchedWordsCount++;
+                }
+            }
+            score = matchedWordsCount * 20;
+
+            // 3. Komut içinde isim tamamen geçiyorsa ekstra puan
+            if (normalizedCommand.includes(name)) score += 30;
+            // İsim komut içinde geçiyorsa (komut kısa ise)
+            if (name.includes(normalizedCommand) && normalizedCommand.length > 2) score += 30;
+        }
+
+        if (score > highestScore) {
+            highestScore = score;
+            bestMatch = data;
+        }
+    }
+
+    return highestScore >= minScore ? bestMatch : null;
+}
+
+            // Yardımcı fonksiyon: Ürün ID'sine göre menü öğesi bulma
+            function findMenuItemById(id) {
+                for (const categoryKey in menuData) {
+                    const category = menuData[categoryKey];
+                    const foundItem = category.items.find(item => item.id === id);
+                    if (foundItem) {
+                        return foundItem;
+                    }
+                }
+                return null;
+            }
+
+            // Fonksiyon: Menüyü dinamik olarak yükle
+            function loadMenu() {
+                mainContent.innerHTML = '';
+                for (const categoryKey in menuData) {
+                    const category = menuData[categoryKey];
+
+                    const categoryTitle = document.createElement('h2');
+                    categoryTitle.className = 'category-title';
+                    categoryTitle.textContent = category.name;
+                    mainContent.appendChild(categoryTitle);
+
+                    const menuGrid = document.createElement('div');
+                    menuGrid.className = 'menu-grid';
+
+                    category.items.forEach(item => {
+                        const menuItemDiv = document.createElement('div');
+                        menuItemDiv.className = 'menu-item';
+                        menuItemDiv.setAttribute('data-id', item.id);
+                        menuItemDiv.setAttribute('data-name', item.name);
+                        menuItemDiv.setAttribute('data-price', item.price);
+                        menuItemDiv.setAttribute('data-serving', item.serving);
+                        menuItemDiv.setAttribute('data-description', item.description);
+
+                        // Resim URL'si images klasöründen alınacak
+                        const itemImageUrl = item.imageUrl;
+
+                        menuItemDiv.innerHTML = `
+                            <img src="${itemImageUrl}" onerror="this.onerror=null;this.src='https://placehold.co/300x200/cccccc/000000?text=Resim+Yok';" alt="${item.name}" class="item-photo">
+                            <div class="menu-content">
+                                <span class="icon"></span>
+                                <h2>${item.name}</h2>
+                                <span class="description">${item.description}</span>
+                                <span class="serving-info">${item.serving}</span>
+                                <p class="price">${item.price} TL</p>
+                            </div>
+                        `;
+                        menuGrid.appendChild(menuItemDiv);
+
+                        menuItemDiv.addEventListener('click', () => {
+                            showItemDetails(item);
+                        });
+                    });
+                    mainContent.appendChild(menuGrid);
+                }
+            }
+
+            // Fonksiyon: Ürün detaylarını göster
+            function showItemDetails(item) {
+                detailsTitle.textContent = item.name;
+                itemDetailsList.innerHTML = `
+                    <li>Ürün Adı: <span>${item.name}</span></li>
+                    <li>Fiyat: <span class="price">${item.price} TL</span></li>
+                    <li>Servis: <span>${item.serving}</span></li>
+                    <li>Açıklama: <span>${item.description}</span></li>
+                `;
+                mainContent.style.display = 'none';
+                detailsSection.style.display = 'block';
+            }
+
+            // Fonksiyon: Metni sesli olarak oku (callback eklendi)
+            // Kategorileri sesli olarak oku
+            function speakCategories(callback) {
+                const categoriesList = Object.values(menuData).map(cat => cat.name).join(', ');
+                speak(`Menü kategorilerimiz şunlardır: ${categoriesList}.`, callback);
+            }
+            function speak(text, callback = null) {
+                if (synth.speaking) {
+                    synth.cancel();
+                }
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'tr-TR';
+                utterance.onend = () => {
+                    console.log('Konuşma bitti.');
+                    if (callback) callback();
+                };
+                utterance.onerror = (event) => {
+                    console.error('Konuşma hatası:', event.error);
+                    if (callback) callback(event.error);
+                };
+                synth.speak(utterance);
+            }
+
+            // Yeni: Dinleme zamanlayıcısını yöneten fonksiyon
+            function scheduleListening(delay = 500) {
+                // Clear any existing timeout to prevent multiple listeners
+                if (listeningTimeoutId) {
+                    clearTimeout(listeningTimeoutId);
+                }
+                listeningTimeoutId = setTimeout(() => {
+                    listeningTimeoutId = null; // Reset ID
+                    // Only start listening if a specific state requires it
+                    // This is the key to preventing unwanted restarts
+                    if (isAwaitingConfirmation || isAwaitingCategorySelection || isAwaitingItemOrder || !initialInteractionDone) {
+                        startListening();
+                    } else {
+                        console.log("Belirli bir durum aktif olmadığı için dinleme başlatılmıyor.");
+                    }
+                }, delay);
+            }
+
+            // Fonksiyon: Ses tanımayı başlat
+            function startListening() {
+                if ('webkitSpeechRecognition' in window) {
+                    recognition = new webkitSpeechRecognition();
+                    recognition.lang = 'tr-TR';
+                    recognition.continuous = false;
+                    recognition.interimResults = false;
+
+                    recognition.onstart = () => {
+                        if (statusDiv) statusDiv.textContent = 'Dinleniyor... Lütfen komutunuzu söyleyin.';
+                        if (statusDisplayDiv) statusDisplayDiv.textContent = 'Dinleniyor... Lütfen komutunuzu söyleyin.';
+                        orderVoiceCommandBtn.disabled = true;
+                        updateOrderBtn.disabled = true;
+                        cancelOrderBtn.disabled = true;
+                    };
+
+                    recognition.onresult = (event) => {
+                        const last = event.results.length - 1;
+                        const command = event.results[last][0].transcript.toLowerCase().trim();
+                        if (statusDiv) statusDiv.textContent = `Algılanan Komut: "${command}"`;
+                        if (statusDisplayDiv) statusDisplayDiv.textContent = `Algılanan Komut: "${command}"`;
+                        processVoiceCommand(command);
+                    };
+
+                    recognition.onerror = (event) => {
+                        if (statusDiv) statusDiv.textContent = `Ses tanıma hatası: ${event.error}. Lütfen mikrofon izinlerinizi kontrol edin.`;
+                        if (statusDisplayDiv) statusDisplayDiv.textContent = `Ses tanıma hatası: ${event.error}. Lütfen mikrofon izinlerinizi kontrol edin.`;
+                        console.error('Ses tanıma hatası:', event.error);
+                        speak('Üzgünüm, sesinizi algılayamadım. Lütfen tekrar deneyin.');
+                        // Hata durumunda dinlemeyi yeniden planla (sadece beklenen bir durum varsa)
+                        scheduleListening(2000);
+                    };
+
+                    recognition.onend = () => {
+                        if (statusDiv) statusDiv.textContent = 'Dinleme durduruldu.';
+                        if (statusDisplayDiv) statusDisplayDiv.textContent = 'Dinleme durduruldu.';
+                        updateButtonStates();
+                    };
+
+                    recognition.start();
+                } else {
+                    if (statusDiv) statusDiv.textContent = 'Tarayıcınız ses tanımayı desteklemiyor. Lütfen Chrome gibi bir tarayıcı kullanın.';
+                    if (statusDisplayDiv) statusDisplayDiv.textContent = 'Tarayıcınız ses tanımayı desteklemiyor. Lütfen Chrome gibi bir tarayıcı kullanın.';
+                    orderVoiceCommandBtn.disabled = true;
+                    updateOrderBtn.disabled = true;
+                    cancelOrderBtn.disabled = true;
+                }
+            }
+
+            // Fonksiyon: Sesli komutları işle
+            function processVoiceCommand(command) {
+                let normalizedCommand = command.toLowerCase().replace(/türk lirası|tl|adet|tane|porsiyon/g, '').trim();
+                let responseMessage = "";
+                let commandHandled = false;
+                let quantity = 1;
+                const quantityMatch = normalizedCommand.match(/(\d+)\s*(?:adet|tane|porsiyon)?/);
+                if (quantityMatch && quantityMatch[1]) {
+                    quantity = parseInt(quantityMatch[1], 10);
+                    normalizedCommand = normalizedCommand.replace(quantityMatch[0], '').trim();
+                }
+
+
+                // Helper: Reset post-order states (artık global)
+                function resetOrderClosedStates() {
+                    isOrderClosedAwaitingTouch = false;
+                    isOrderClosedUpdateOrCancel = false;
+                    if (orderClosedTouchHandler) {
+                        document.body.removeEventListener('click', orderClosedTouchHandler);
+                        document.body.removeEventListener('touchstart', orderClosedTouchHandler);
+                        orderClosedTouchHandler = null;
+                    }
+                }
+
+                // Helper: Handle touch after order closed (artık global)
+                function handleOrderClosedTouch() {
+    isOrderClosedAwaitingTouch = false;
+    isOrderClosedUpdateOrCancel = true;
+    speak('Siparişinizi güncellemek mi yoksa iptal mi etmek istersiniz?', () => {
+        if (statusDiv) statusDiv.textContent = 'Dinliyorum... Lütfen komutunuzu söyleyin.';
+        if (statusDisplayDiv) statusDisplayDiv.textContent = 'Dinliyorum... Lütfen komutunuzu söyleyin.';
+        isAwaitingItemOrder = true;
+        speak('Dinliyorum. Lütfen komutunuzu söyleyin.', () => {
+            scheduleListening();
+        });
+    });
+                }
+
+                if (isOrderClosedUpdateOrCancel) {
+                    let normCmd = command.toLowerCase();
+                    // Öncelik: İptal komutları
+                    if (normCmd.match(/(iptal|iptal istiyorum|menüyü iptal|siparişi iptal|iptal et)/)) {
+                        isOrderClosedUpdateOrCancel = false;
+                        currentOrder = [];
+                        updateOrderListDisplay();
+                        speak('Üzgünüz efendim, siparişiniz iptal edildi.', () => {
+                            resetOrderClosedStates();
+                        });
+                        if (orderStatusDiv) orderStatusDiv.textContent = 'Henüz bir siparişiniz yok.';
+                        if (orderStatusDisplayDiv) orderStatusDisplayDiv.textContent = 'Henüz bir siparişiniz yok.';
+                        return;
+                    }
+
+                    // Kategori/menü/say/duymak istiyorum gibi kavramlar
+                    if (normCmd.match(/(kategori|menü|say|duymak istiyorum|kategorileri|menüyü|list|oku)/)) {
+                        isOrderClosedUpdateOrCancel = false;
+                        speakCategories(() => {
+                            speak('Bir kategori seçebilir veya doğrudan ürün adı söyleyebilirsiniz.', () => {
+                                isAwaitingCategorySelection = true;
+                                scheduleListening();
+                            });
+                        });
+                        return;
+                    }
+
+                    // Güncelleme komutları veya ürün adı
+                    if (normCmd.match(/(güncelle|güncel|istiyorum|güncellemek istiyorum|ekle|eklemek istiyorum|sipariş ekle|sipariş güncelle|ürün ekle|evet)/) || true) {
+                        // Ürün adı var mı kontrol et
+                        const allItems = Object.values(menuData).flatMap(category => category.items);
+                        let matchedItem = findBestMatch(normCmd, allItems, 'name', 60);
+                        if (matchedItem) {
+                            isOrderClosedUpdateOrCancel = false;
+                            addItemToOrder(matchedItem, 1);
+                            let total = currentOrder.reduce((sum, item) => sum + item.totalPrice, 0);
+                            let detailMsg = `${matchedItem.name} siparişinize eklendi. Şu şekilde servis ediliyor: ${matchedItem.serving}. Fiyatı ${matchedItem.price} Türk Lirası. Siparişiniz güncellendi. Toplam ${total} Türk lirası. Afiyet olsun.`;
+                            speak(detailMsg, () => {
+                                resetOrderClosedStates();
+                            });
+                            return;
+                        } else {
+                            // Ürün adı bulunamazsa tekrar sor
+                            speak('Eklemek istediğiniz ürünü anlayamadım. Kategori ismi veya ürün adı söyleyebilirsiniz.', () => {
+                                isAwaitingCategorySelection = true;
+                                scheduleListening();
+                            });
+                            return;
+                        }
+                    }
+
+                    // Hiçbir şey eşleşmezse tekrar sor
+                    speak('Lütfen güncellemek veya iptal etmek istediğinizi belirtin.', () => {
+                        scheduleListening();
+                    });
+                    return;
+                }
+
+                if (isAwaitingConfirmation) {
+                    const hasNegativeKeyword = normalizedCommand.includes('hayır') || normalizedCommand.includes('istemiyorum') || normalizedCommand.includes('teşekkür ederim') || normalizedCommand.includes('yok') || normalizedCommand.includes('hayır teşekkürler') || normalizedCommand.includes('başka bir şey istemiyorum') || normalizedCommand.includes('başka bir şey yok') || normalizedCommand.includes('yeter') || normalizedCommand.includes('hiçbir şey') || normalizedCommand.includes('bitirdim') || normalizedCommand.includes('yeterli');
+                    const hasPositiveKeyword = normalizedCommand.includes('evet') || normalizedCommand.includes('var') || normalizedCommand.includes('istiyorum') || normalizedCommand.includes('olur') || normalizedCommand.includes('evet lütfen');
+
+                    if (hasNegativeKeyword) {
+                        commandHandled = true;
+                        isAwaitingConfirmation = false;
+                        isAwaitingCategorySelection = false;
+                        isAwaitingItemOrder = false;
+                        if (currentOrder.length > 0) {
+                            const orderDetails = currentOrder.map(item => {
+                                const menuItem = findMenuItemById(item.id);
+                                return `${item.quantity} adet ${item.name}` + (menuItem && menuItem.serving ? `, ${menuItem.serving} olarak servis edilecek` : '');
+                            }).join('. ');
+                            const total = currentOrder.reduce((sum, item) => sum + item.totalPrice, 0);
+                            responseMessage = `Siparişinizde ${orderDetails} bulunmaktadır. Toplam fiyat ${total} Türk lirasıdır. Afiyet olsun efendim.`;
+                            speak(responseMessage, () => {
+                                setTimeout(() => {
+                                    speak('Eğer siparişinizi güncellemek veya iptal etmek isterseniz ekrana dokunabilirsiniz.', () => {
+                                        isOrderClosedAwaitingTouch = true;
+                                        orderClosedTouchHandler = function() {
+                                            if (isOrderClosedAwaitingTouch) {
+                                                handleOrderClosedTouch();
+                                            }
+                                        };
+                                        document.body.addEventListener('click', orderClosedTouchHandler, { once: true });
+                                        document.body.addEventListener('touchstart', orderClosedTouchHandler, { once: true });
+                                    });
+                                }, 1000);
+                            });
+                        } else {
+                            responseMessage = "Şu anda siparişiniz bulunmamaktadır. Teşekkür ederiz, iyi günler dileriz.";
+                            speak(responseMessage, () => {
+                                if (recognition) recognition.stop();
+                                if (listeningTimeoutId) {
+                                    clearTimeout(listeningTimeoutId);
+                                    listeningTimeoutId = null;
+                                }
+                            });
+                        }
+                        return;
+                    } else if (hasPositiveKeyword) {
+                        setTimeout(() => {
+                            speak('Kategorileri saymamı ister misiniz, yoksa ürün adı söyleyebilirsiniz.', () => {
+                                isAwaitingCategorySelection = true;
+                                isAwaitingConfirmation = false;
+                                scheduleListening();
+                            });
+                        }, 2000);
+                        commandHandled = true;
+                        return;
+                    } else {
+                        responseMessage = 'Lütfen "evet" veya "hayır" diyerek yanıtlayın.';
+                        speak(responseMessage, () => scheduleListening(1000));
+                        commandHandled = true;
+                        return;
+                    }
+                }
+
+                // 2. Önce belirli bir ürünü eşleştirmeye çalış (BURAYA GELECEK)
+                const allItems = Object.values(menuData).flatMap(category => category.items);
+                let matchedItem = findBestMatch(normalizedCommand, allItems, 'name', 60);
+
+                if (matchedItem) {
+                    // Komut açıkça detay soruyorsa (örn. "Türk Kahvesi ne?")
+                    if (normalizedCommand.includes('ne') || normalizedCommand.includes('nedir') || normalizedCommand.includes('fiyatı ne') || normalizedCommand.includes('fiyatı kaç') || normalizedCommand.includes('açıklaması ne')) {
+                        responseMessage = `${matchedItem.name}. Açıklaması: ${matchedItem.description}. Nasıl servis edilir: ${matchedItem.serving}. Fiyatı ${matchedItem.price} Türk Lirası.`;
+                        speak(responseMessage, () => {
+                            showItemDetails(matchedItem);
+                            speak('Başka istediğiniz var mı?');
+                            isAwaitingConfirmation = true;
+                            scheduleListening(); // Dinlemeyi yeniden planla
+                        });
+                        commandHandled = true;
+                        isAwaitingItemOrder = false;
+                        return;
+                    }
+                    // Komut açıkça sipariş etmeyi belirtiyorsa (örn. "bir Türk Kahvesi sipariş et" veya "Türk Kahvesi istiyorum")
+                    // VEYA sadece ürün adı veya anahtar kelimesi ise (örn. "Türk Kahvesi" veya "su")
+                    else if (normalizedCommand.includes('sipariş et') || normalizedCommand.includes('ekle') || normalizedCommand.includes('alabilir miyim') || normalizedCommand.includes('isterim') || normalizedCommand.includes('lütfen') || normalizedCommand === matchedItem.name.toLowerCase() || matchedItem.keywords.some(k => normalizedCommand === k)) {
+                        addItemToOrder(matchedItem, quantity);
+                        responseMessage = `${matchedItem.name} siparişinize eklendi. Şu şekilde servis ediliyor: ${matchedItem.serving}. Fiyatı ${matchedItem.price} Türk Lirası.`;
+                        speak(responseMessage, () => {
+                            showItemDetails(matchedItem); // Ekranda detayları göstermeye devam et
+                            speak('Başka istediğiniz var mı?');
+                            isAwaitingConfirmation = true;
+                            scheduleListening(); // Dinlemeyi yeniden planla
+                        });
+                        commandHandled = true;
+                        isAwaitingItemOrder = false;
+                        return;
+                    }
+                    // Komut açıkça çıkarmayı belirtiyorsa (örn. "Türk Kahvesi çıkar")
+                    else if (normalizedCommand.includes('çıkar') || normalizedCommand.includes('iptal et') || normalizedCommand.includes('sil')) {
+                        removeItemFromOrder(matchedItem, quantity);
+                        responseMessage = `${quantity} adet ${matchedItem.name} siparişinizden çıkarıldı.`;
+                        speak(responseMessage, () => {
+                            speak('Başka istediğiniz var mı?');
+                            isAwaitingConfirmation = true;
+                            scheduleListening(); // Dinlemeyi yeniden planla
+                        });
+                        commandHandled = true;
+                        isAwaitingItemOrder = true;
+                        return;
+                    }
+                }
+
+                // 3. Kategorileri saymamı ister misin, menüyü say, kategorileri oku gibi komutlar
+                if (
+                    normalizedCommand.includes('kategorileri say') ||
+                    normalizedCommand.includes('menüyü say') ||
+                    normalizedCommand.includes('kategorileri oku') ||
+                    normalizedCommand.includes('menüyü oku') ||
+                    normalizedCommand.includes('kategorileri list') ||
+                    normalizedCommand.includes('menuyu say') ||
+                    normalizedCommand.includes('menuyu oku')
+                ) {
+                    speakCategories(() => {
+                        speak('Bir kategori seçebilir veya doğrudan ürün adı söyleyebilirsiniz.', () => {
+                            isAwaitingCategorySelection = true;
+                            scheduleListening();
+                        });
+                    });
+                    commandHandled = true;
+                    return;
+                }
+
+                // 4. Ardından, bir kategoriyi eşleştirmeye çalış
+                const allCategories = Object.values(menuData);
+                let matchedCategory = findBestMatch(normalizedCommand, allCategories, 'name', 70);
+                if (matchedCategory) {
+                    const categoryItems = matchedCategory.items.map(item => `${item.name} ${item.price} TL`).join(', ');
+                    responseMessage = `${matchedCategory.name} kategorisinde şunlar var: ${categoryItems}. Hangi ürünü sipariş etmek veya detayını öğrenmek istersiniz?`;
+                    commandHandled = true;
+                    isAwaitingCategorySelection = false;
+                    isAwaitingItemOrder = true;
+                    speak(responseMessage, () => scheduleListening(500));
+                    return;
+                }
+
+                // Özel "içecek istiyorum" mantığı (genel ürün eşleşmesinden sonra tutuldu)
+                if (normalizedCommand.includes('içecek istiyorum') || normalizedCommand.includes('içecek alabilir miyim') || normalizedCommand.includes('bir içecek')) {
+                    responseMessage = `İçecekler menümüzde alkollü ve alkolsüz seçenekler bulunmaktadır. Hangi tür içecek istersiniz? Alkollü içecekler mi, yoksa alkolsüz içecekler mi?`;
+                    commandHandled = true;
+                    isAwaitingCategorySelection = true;
+                    speak(responseMessage, () => scheduleListening(500)); // Dinlemeyi yeniden planla
+                    return;
+                }
+
+                // 5. Genel komutlar
+                if (normalizedCommand.includes('sipariş ver') && !commandHandled) {
+                    responseMessage = 'Ne sipariş vermek istersiniz? Lütfen ürün adını söyleyin.';
+                    commandHandled = true;
+                    isAwaitingItemOrder = true;
+                    speak(responseMessage, () => scheduleListening(500));
+                } else if ((normalizedCommand.includes('menüyü göster') || normalizedCommand.includes('menü') || normalizedCommand.includes('kategorileri göster')) && !commandHandled) {
+                    loadMenu();
+                    mainContent.style.display = 'block';
+                    detailsSection.style.display = 'none';
+                    speakCategories(() => {
+                        speak('Bir kategori seçebilir veya doğrudan ürün adı söyleyebilirsiniz.', () => {
+                            isAwaitingCategorySelection = true;
+                            scheduleListening(500);
+                        });
+                    });
+                    commandHandled = true;
+                } else if ((normalizedCommand.includes('siparişimi göster') || normalizedCommand.includes('sepeti göster') || normalizedCommand.includes('siparişim ne')) && !commandHandled) {
+                    updateOrderListDisplay();
+                    if (currentOrder.length > 0) {
+                        const total = currentOrder.reduce((sum, item) => sum + item.totalPrice, 0);
+                        const orderSummary = currentOrder.map(item => {
+                            const menuItem = findMenuItemById(item.id);
+                            return `${item.quantity} adet ${item.name}` + (menuItem && menuItem.serving ? `, ${menuItem.serving} olarak servis edilecek` : '');
+                        }).join('. ');
+                        responseMessage = `Mevcut siparişiniz: ${orderSummary}. Toplam ${total} Türk Lirası. Afiyet olsun.`;
+                        isAwaitingConfirmation = false;
+                    } else {
+                        responseMessage = 'Henüz aktif siparişiniz bulunmamaktadır. Başka bir şeye ihtiyacınız olursa lütfen söyleyin.';
+                    }
+                    commandHandled = true;
+                    speak(responseMessage, () => scheduleListening(500));
+                } else if ((normalizedCommand.includes('siparişimi tamamla') || normalizedCommand.includes('hesabı iste') || normalizedCommand.includes('ödeme yap')) && !commandHandled) {
+                    if (currentOrder.length > 0) {
+                        const total = currentOrder.reduce((sum, item) => sum + item.totalPrice, 0);
+                        responseMessage = `Siparişiniz onaylandı. Toplam ${total} Türk Lirası. Afiyet olsun.`;
+                        if (orderStatusDiv) orderStatusDiv.textContent = `Siparişiniz Onaylandı! Toplam: ${total} TL`;
+                        if (orderStatusDisplayDiv) orderStatusDisplayDiv.textContent = `Siparişiniz Onaylandı! Toplam: ${total} TL`;
+                        currentOrder = [];
+                        updateOrderListDisplay();
+                    } else {
+                        responseMessage = 'Henüz bir siparişiniz bulunmamaktadır.';
+                    }
+                    commandHandled = true;
+                    isAwaitingConfirmation = false;
+                    speak(responseMessage, updateButtonStates);
+                } else if (normalizedCommand.includes('siparişi iptal et') && !commandHandled) {
+                    if (currentOrder.length > 0) {
+                        currentOrder = [];
+                        updateOrderListDisplay();
+                        responseMessage = 'Siparişiniz tamamen iptal edildi.';
+                        if (orderStatusDiv) orderStatusDiv.textContent = 'Henüz bir siparişiniz yok.';
+                        if (orderStatusDisplayDiv) orderStatusDisplayDiv.textContent = 'Henüz bir siparişiniz yok.';
+                    } else {
+                        responseMessage = 'İptal edilecek aktif bir siparişiniz bulunmamaktadır.';
+                    }
+                    commandHandled = true;
+                    isAwaitingConfirmation = false;
+                    speak(responseMessage, updateButtonStates);
+                } else if ((normalizedCommand.includes('geri dön') || normalizedCommand.includes('ana sayfa') || normalizedCommand.includes('menüye dön')) && !commandHandled) {
+                    mainContent.style.display = 'block';
+                    detailsSection.style.display = 'none';
+                    speak('Ana menüye geri döndünüz. Kategorileri tekrar saymamı ister misiniz, yoksa ürün adı söyleyebilirsiniz?', () => {
+                        isAwaitingCategorySelection = true;
+                        scheduleListening(1000);
+                    });
+                    commandHandled = true;
+                } else if (normalizedCommand.includes('yardım') && !commandHandled) {
+                    responseMessage = 'Size nasıl yardımcı olabilirim? "Menüyü göster", "Sipariş ver", "Siparişimi göster" veya "Siparişi iptal et" gibi komutları kullanabilirsiniz.';
+                    commandHandled = true;
+                    speak(responseMessage, () => scheduleListening(500));
+                } else if (!commandHandled) {
+                    responseMessage = 'Üzgünüm, söylediğinizi anlayamadım. Lütfen komutunuzu daha net tekrarlayın veya "yardım" diyebilirsiniz.';
+                    speak(responseMessage, () => scheduleListening(1500));
+                }
+
+                if (commandHandled && !isAwaitingConfirmation && !isAwaitingCategorySelection && !isAwaitingItemOrder) {
+                    updateButtonStates();
+                }
+            }
+
+            // Fonksiyon: Siparişe ürün ekle
+            function addItemToOrder(item, quantity) {
+                const existingItemIndex = currentOrder.findIndex(orderItem => orderItem.id === item.id);
+                if (existingItemIndex > -1) {
+                    currentOrder[existingItemIndex].quantity += quantity;
+                    currentOrder[existingItemIndex].totalPrice += item.price * quantity;
+                } else {
+                    currentOrder.push({
+                        id: item.id,
+                        name: item.name,
+                        price: item.price,
+                        quantity: quantity,
+                        totalPrice: item.price * quantity
+                    });
+                }
+                updateOrderListDisplay();
+            }
+
+            // Fonksiyon: Siparişten ürün çıkar
+            function removeItemFromOrder(item, quantity) {
+                const existingItemIndex = currentOrder.findIndex(orderItem => orderItem.id === item.id);
+                if (existingItemIndex > -1) {
+                    if (currentOrder[existingItemIndex].quantity <= quantity) {
+                        currentOrder.splice(existingItemIndex, 1);
+                        speak(`${item.name} siparişinizden tamamen çıkarıldı.`);
+                    } else {
+                        currentOrder[existingItemIndex].quantity -= quantity;
+                        currentOrder[existingItemIndex].totalPrice -= item.price * quantity;
+                        speak(`${quantity} adet ${item.name} siparişinizden çıkarıldı.`);
+                    }
+                } else {
+                    speak(`${item.name} siparişinizde bulunmamaktadır.`);
+                }
+                updateOrderListDisplay();
+            }
+
+            // Fonksiyon: Sipariş listesini güncelle ve göster
+            function updateOrderListDisplay() {
+                ordersUl.innerHTML = '';
+                if (currentOrder.length === 0) {
+                    ordersUl.innerHTML = '<li>Henüz aktif siparişiniz bulunmamaktadır.</li>';
+                    if (orderStatusDiv) orderStatusDiv.textContent = 'Henüz bir siparişiniz yok.';
+                    if (orderStatusDisplayDiv) orderStatusDisplayDiv.textContent = 'Henüz bir siparişiniz yok.';
+                } else {
+                    let totalOrderPrice = 0;
+                    currentOrder.forEach(item => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            <span class="order-item-name">${item.name} (${item.quantity} adet)</span>
+                            <span class="order-item-price">${item.totalPrice} TL</span>
+                        `;
+                        ordersUl.appendChild(li);
+                        totalOrderPrice += item.totalPrice;
+                    });
+                    if (orderStatusDiv) orderStatusDiv.textContent = `Mevcut Siparişiniz: ${totalOrderPrice} TL`;
+                    if (orderStatusDisplayDiv) orderStatusDisplayDiv.textContent = `Mevcut Siparişiniz: ${totalOrderPrice} TL`;
+                }
+                updateButtonStates();
+            }
+
+            // Fonksiyon: Butonların durumunu güncelle
+            function updateButtonStates() {
+                const hasOrder = currentOrder.length > 0;
+                updateOrderBtn.disabled = !hasOrder;
+                cancelOrderBtn.disabled = !hasOrder;
+                orderVoiceCommandBtn.disabled = false;
+            }
+
+            // Function to handle the first user interaction (click/touch anywhere)
+            function handleInitialInteraction() {
+                if (!initialInteractionDone) {
+                    initialInteractionDone = true;
+                    document.body.removeEventListener('click', handleInitialInteraction);
+                    document.body.removeEventListener('touchstart', handleInitialInteraction);
+                    speakCategories(() => {
+                        speak('Bir kategori seçebilir veya doğrudan ürün adı söyleyebilirsiniz.', () => {
+                            isAwaitingCategorySelection = true;
+                            scheduleListening();
+                        });
+                    });
+                }
+            }
+
+            loadMenu();
+            updateOrderListDisplay();
+            updateButtonStates();
+
+            const initialWelcomeOnLoad = 'Son Yaz Restorant\'a hoş geldiniz! Menüyü dinlemek için ekrana dokunabilirsiniz.';
+            speak(initialWelcomeOnLoad, (error) => {
+                setTimeout(() => {
+                    document.body.addEventListener('click', handleInitialInteraction);
+                    document.body.addEventListener('touchstart', handleInitialInteraction);
+                }, 2000);
+            });
+
+            orderVoiceCommandBtn.addEventListener('click', () => {
+                if (!initialInteractionDone) {
+                    handleInitialInteraction();
+                } else {
+                    speak('Lütfen ne sipariş vermek istediğinizi söyleyin.');
+                    isAwaitingItemOrder = true;
+                    scheduleListening(); // Dinlemeyi başlat
+                }
+            });
+
+            updateOrderBtn.addEventListener('click', () => {
+                speak('Siparişinizi nasıl güncellemek istersiniz? Örneğin, "bir çay daha ekle" veya "iki kahve çıkar".');
+                isAwaitingItemOrder = true;
+                scheduleListening(); // Dinlemeyi başlat
+            });
+
+            cancelOrderBtn.addEventListener('click', () => {
+                if (currentOrder.length > 0) {
+                    currentOrder = []; // Siparişi direkt iptal et
+                    updateOrderListDisplay();
+                    speak('Siparişiniz iptal edildi.');
+                    if (orderStatusDiv) orderStatusDiv.textContent = 'Henüz bir siparişiniz yok.';
+                    if (orderStatusDisplayDiv) orderStatusDisplayDiv.textContent = 'Henüz bir siparişiniz yok.';
+                    isAwaitingConfirmation = false; // İptal sonrası onay bekleme durumunu sıfırla
+                    isAwaitingCategorySelection = false;
+                    isAwaitingItemOrder = false;
+                    updateButtonStates();
+                } else {
+                    speak('İptal edilecek aktif bir siparişiniz bulunmamaktadır.');
+                }
+            });
+
+            backBtn.addEventListener('click', () => {
+                mainContent.style.display = 'block';
+                detailsSection.style.display = 'none';
+                speak('Ana menüye geri döndünüz. Hangi kategoriye bakmak istersiniz veya doğrudan ürün adı söyleyebilirsiniz?');
+                isAwaitingCategorySelection = true;
+                scheduleListening(1000); // Dinlemeyi yeniden planla
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
